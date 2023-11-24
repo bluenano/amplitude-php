@@ -2,12 +2,14 @@
 namespace Zumba\Amplitude;
 
 use Psr\Log;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class Amplitude
 {
     use Log\LoggerAwareTrait;
 
-    const AMPLITUDE_API_URL = 'https://api.amplitude.com/httpapi';
+    const AMPLITUDE_API_URL = 'https://api.amplitude.com/2/httpapi';
 
     const EXCEPTION_MSG_NO_API_KEY = 'API Key is required to log an event';
     const EXCEPTION_MSG_NO_EVENT_TYPE = 'Event Type is required to log or queue an event';
@@ -501,36 +503,30 @@ class Amplitude
             throw new \InternalErrorException('Event or api key not set, cannot send event');
         }
         $url = empty($this->apiUrl) ? static::AMPLITUDE_API_URL : $this->apiUrl;
-        $ch = curl_init($url);
-        if (!$ch) {
-            // Could be a number of PHP environment problems, log a critical error
-            $this->logger->critical(
-                'Call to curl_init(' . $url . ') failed, unable to send Amplitude event'
-            );
-            return;
-        }
-        $postFields = [
+        $client = new Client([
+            'base_uri' => $url
+        ]);
+        $json = json_encode(array(
             'api_key' => $this->apiKey,
-            'event' => json_encode($this->event),
-        ];
-        curl_setopt($ch, \CURLOPT_POSTFIELDS, $postFields);
-        // Always return instead of outputting response!
-        curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        $curlErrno = curl_errno($ch);
-        if ($curlErrno) {
-            $this->logger->critical(
-                'Curl error: ' . curl_error($ch),
-                compact('curlErrno', 'response', 'postFields')
-            );
-        } else {
-            $httpCode = curl_getinfo($ch, \CURLINFO_HTTP_CODE);
+            'events' => array($this->event)
+        ));
+        $body = ['headers' => array('Content-Type' => 'application/json'), 'body' => $json];
+        try {
+            $response = $client->post('', $body);
+            $responseBody = $response->getBody()->getContents();
+            $statusCode = $response->getStatusCode();
             $this->logger->log(
-                $httpCode === 200 ? Log\LogLevel::INFO : Log\LogLevel::ERROR,
-                'Amplitude HTTP API response: ' . $response,
-                compact('httpCode', 'response', 'postFields')
+                $statusCode === 200 ? Log\LogLevel::INFO : Log\LogLevel::ERROR,
+                'Amplitude HTTP API response: ' . $responseBody,
+                compact('statusCode', 'responseBody', 'json')
+            );
+        } catch (ClientException $e) {
+            $statusCode = $e->getStatusCode;
+            $responseBody = $response->getBody()->getContents();
+            $this->logger->critical(
+                'GuzzleHttp error: ' . $e->getMessage(),
+                compact('statusCode', 'responseBody', 'json')
             );
         }
-        curl_close($ch);
     }
 }
