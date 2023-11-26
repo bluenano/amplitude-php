@@ -1,8 +1,8 @@
 {
-    "name": "zumba/amplitude-php",
+    "name": "bluenano/amplitude-php",
     "description": "PHP SDK for Amplitude",
     "keywords": ["amplitude", "sdk", "analytics", "tracking"],
-    "homepage": "https://github.com/zumba/amplitude-php",
+    "homepage": "https://github.com/bluenano/amplitude-php",
     "license": "MIT",
     "authors": [
         {
@@ -12,6 +12,11 @@
         {
             "name": "Jonathan Foote",
             "email": "jonathan.foote@zumba.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Sean Schlaefli",
+            "email": "sean.schlaefli@gmail.com",
             "role": "Developer"
         }
     ],
@@ -28,8 +33,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Zumba\\Amplitude\\": "./src/",
-            "Zumba\\Amplitude\\Test\\": "./test/"
+            "Bluenano\\Amplitude\\": "./src/",
+            "Bluenano\\Amplitude\\Test\\": "./test/"
         }
     }
 }

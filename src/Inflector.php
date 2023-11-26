@@ -1,5 +1,5 @@
 <?php
-namespace Zumba\Amplitude;
+namespace Bluenano\Amplitude;
 
 class Inflector
 {

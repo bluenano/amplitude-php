@@ -1,10 +1,10 @@
 <?php
 
-namespace Zumba\Amplitude\Test;
+namespace Bluenano\Amplitude\Test;
 
 use PHPUnit\Framework\TestCase;
-use Zumba\Amplitude\Amplitude;
-use Zumba\Amplitude\Event;
+use Bluenano\Amplitude\Amplitude;
+use Bluenano\Amplitude\Event;
 
 /**
  * @group amplitude

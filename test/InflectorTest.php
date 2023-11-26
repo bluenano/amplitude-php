@@ -1,9 +1,9 @@
 <?php
 
-namespace Zumba\Amplitude\Test;
+namespace Bluenano\Amplitude\Test;
 
 use PHPUnit\Framework\TestCase;
-use \Zumba\Amplitude\Inflector;
+use \Bluenano\Amplitude\Inflector;
 
 /**
  * @group amplitude

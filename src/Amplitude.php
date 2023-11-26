@@ -1,5 +1,5 @@
 <?php
-namespace Zumba\Amplitude;
+namespace Bluenano\Amplitude;
 
 use Psr\Log;
 use GuzzleHttp\Client;
@@ -33,7 +33,7 @@ class Amplitude
     /**
      * The event that will be used for the next event being tracked
      *
-     * @var \Zumba\Amplitude\Event
+     * @var \Bluenano\Amplitude\Event
      */
     protected $event;
 
@@ -61,7 +61,7 @@ class Amplitude
     /**
      * Queue of events, used to allow generating events that might happen prior to amplitude being fully initialized
      *
-     * @var \Zumba\Amplitude\Event[]
+     * @var \Bluenano\Amplitude\Event[]
      */
     protected $queue = [];
 
@@ -89,7 +89,7 @@ class Amplitude
     /**
      * Array of Amplitude instances
      *
-     * @var \Zumba\Amplitude\Amplitude[]
+     * @var \Bluenano\Amplitude\Amplitude[]
      */
     private static $instances = [];
 
@@ -114,7 +114,7 @@ class Amplitude
      *
      * @param string $instanceName Optional, can use to maintain multiple singleton instances of amplitude, each with
      *   it's own API key set
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public static function getInstance($instanceName = 'default')
     {
@@ -150,7 +150,7 @@ class Amplitude
      * @param string $apiKey Amplitude API key
      * @param string $userId
      * @param string $apiUrl Amplitude API URL
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public function init($apiKey, $userId = null, $apiUrl = null)
     {
@@ -167,7 +167,7 @@ class Amplitude
      *
      * Note that api key, and either the user ID or device ID need to be set prior to calling this.
      *
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      * @throws \LogicException
      */
     public function logQueuedEvents()
@@ -186,7 +186,7 @@ class Amplitude
     /**
      * Clear out all events in the queue, without sending them to amplitude
      *
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public function resetQueue()
     {
@@ -200,13 +200,13 @@ class Amplitude
      * You can also pass in an event or array of event properties.  If you pass in an event, it will be set as the
      * event to be used for the next call to queueEvent() or logEvent()
      *
-     * @param null|array|\Zumba\Amplitude\Event Can pass in an event to set as the next event to run, or array to set
+     * @param null|array|\Bluenano\Amplitude\Event Can pass in an event to set as the next event to run, or array to set
      *   properties on that event
-     * @return \Zumba\Amplitude\Event
+     * @return \Bluenano\Amplitude\Event
      */
     public function event($event = null)
     {
-        if (!empty($event) && $event instanceof \Zumba\Amplitude\Event) {
+        if (!empty($event) && $event instanceof \Bluenano\Amplitude\Event) {
             $this->event = $event;
         } elseif (empty($this->event)) {
             // Set the values that persist between tracking events
@@ -222,7 +222,7 @@ class Amplitude
     /**
      * Resets the event currently in the process of being set up (what is returned by event())
      *
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public function resetEvent()
     {
@@ -241,7 +241,7 @@ class Amplitude
      *
      * @param string $eventType Required if not set on event object prior to calling this
      * @param array $eventProperties Optional, properties to set on event
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      * @throws \LogicException Thorws exception if any of the requirments are not met, such as api key set
      */
     public function logEvent($eventType = '', array $eventProperties = [])
@@ -312,7 +312,7 @@ class Amplitude
      *
      * @param string $eventType
      * @param array $eventProperties
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      * @throws \LogicException
      */
     public function queueEvent($eventType = '', array $eventProperties = [])
@@ -344,7 +344,7 @@ class Amplitude
      * Any set with this will take precedence over any set on the Event object
      *
      * @param string $userId
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public function setUserId($userId)
     {
@@ -358,7 +358,7 @@ class Amplitude
      * Any set with this will take precedence over any set on the Event object
      *
      * @param string $deviceId
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public function setDeviceId($deviceId)
     {
@@ -374,7 +374,7 @@ class Amplitude
      * If no events are logged, it will not get sent to Amplitude
      *
      * @param array $userProperties
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public function setUserProperties(array $userProperties)
     {
@@ -385,7 +385,7 @@ class Amplitude
     /**
      * Resets user properties added with setUserProperties() if they have not already been sent in an event to Amplitude
      *
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public function resetUserProperties()
     {
@@ -413,7 +413,7 @@ class Amplitude
      *
      * Does not reset user information if set manually on an individual event in the queue.
      *
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public function resetUser()
     {
@@ -429,7 +429,7 @@ class Amplitude
      * If set to true, will not send any future events to amplitude for this amplitude instance.
      *
      * @param boolean $optOut
-     * @return \Zumba\Amplitude\Amplitude
+     * @return \Bluenano\Amplitude\Amplitude
      */
     public function setOptOut($optOut)
     {
