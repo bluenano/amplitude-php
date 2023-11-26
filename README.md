@@ -1,9 +1,11 @@
-# Zumba amplitude-php
+# Bluenano amplitude-php
+
+Credit to https://github.com/Bluenano/amplitude-php. The purpose of this fork is to modify the default API url to Amplitude's HTTP v2 API. Primary motivation is to make use of event deduplication using the `insert_id` event property.
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-![Build Status](https://github.com/zumba/amplitude-php/workflows/Amplitude%20PHP%20CI/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/zumba/amplitude-php/badge.svg?branch=master)](https://coveralls.io/github/zumba/amplitude-php?branch=master)
-[![Scrutinizer](https://scrutinizer-ci.com/g/zumba/amplitude-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/zumba/amplitude-php/)
+![Build Status](https://github.com/Bluenano/amplitude-php/workflows/Amplitude%20PHP%20CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/Bluenano/amplitude-php/badge.svg?branch=master)](https://coveralls.io/github/Bluenano/amplitude-php?branch=master)
+[![Scrutinizer](https://scrutinizer-ci.com/g/Bluenano/amplitude-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Bluenano/amplitude-php/)
 
 This is a moderately thin PHP API for [Amplitude](https://amplitude.com/), powerful enough to do what you need without getting in the way.  Designed to work well in 2 main scenarios:
 
@@ -15,7 +17,7 @@ This is a moderately thin PHP API for [Amplitude](https://amplitude.com/), power
 ```php
 // After User is Initialized in your application, set the user info in Amplitude that you want to track (minimally
 // the user identifier or device identifier, and of course your Amplitude App API key)
-$amplitude = \Zumba\Amplitude\Amplitude::getInstance();
+$amplitude = \Bluenano\Amplitude\Amplitude::getInstance();
 $amplitude->init('APIKEY', 'johnny@example.com')
     ->setUserProperties([
         'dob' => '1980-11-04',
@@ -30,11 +32,11 @@ $amplitude->init('APIKEY', 'johnny@example.com')
 // This will even work if called before the above code initializes Amplitude!  If that is case, it will queue it
 // and send the event when logQueuedEvents() is called.  If Amplitude is already initialized, this will send the event
 // to Amplitude right away (only uses a queue for early-logged events)
-\Zumba\Amplitude\Amplitude::getInstance()
+\Bluenano\Amplitude\Amplitude::getInstance()
     ->queueEvent('EVENT TYPE');
 
 // Can pass in an array for the second parameter to set event properties
-\Zumba\Amplitude\Amplitude::getInstance()
+\Bluenano\Amplitude\Amplitude::getInstance()
     ->queueEvent('SECOND EVENT', ['quantity' => 1, 'price' => 15.32, 'Custom Property' => 'Widgets']);
 
 // This is a simple example to get you started, see the rest of the readme for more examples
@@ -97,7 +99,7 @@ p {
 <h1>Testing Amplitude Log Event Response</h1>
 <h2>API Key: '<?= $apikey ?>'</h2>
 <?php
-$amplitude = new \Zumba\Amplitude\Amplitude();
+$amplitude = new \Bluenano\Amplitude\Amplitude();
 
 // Add the chatty logger so we can see log messages
 $amplitude->setLogger($chatty);
@@ -134,7 +136,7 @@ Once you have that unique identifier that allows an anonymous user to be tracked
 
 ```php
 // After your application has set up the session (for instance in your bootloader or similar), initialize Amplitude:
-$amplitude = \Zumba\Amplitude\Amplitude::getInstance();
+$amplitude = \Bluenano\Amplitude\Amplitude::getInstance();
 // Notice we are not setting second parameter here for user ID, we will do that below if it is available
 $amplitude->init('APIKEY');
 
@@ -169,14 +171,14 @@ if ($canLogEvents) {
 // -- Meanwhile, in another part of the code... --
 
 // Just queue events as normal
-\Zumba\Amplitude\Amplitude::getInstance()->queueEvent('EVENT');
+\Bluenano\Amplitude\Amplitude::getInstance()->queueEvent('EVENT');
 
 ```
 
 # User Properties
 There is one main way to set user properties, and this will send the user properties with the next Amplitude event sent to Amplitude:
 ```php
-\Zumba\Amplitude\Amplitude::getInstance()
+\Bluenano\Amplitude\Amplitude::getInstance()
     ->setUserProperties(
         [
             'name' => 'Jane',
@@ -201,7 +203,7 @@ Another option for setting the user properties, is setting them on the Event obj
 You would typically use this in situations similar to the one in the next section, for times you may be sending events for different users in the same page load.
 
 ```php
-$event = new \Zumba\Amplitude\Event();
+$event = new \Bluenano\Amplitude\Event();
 // Method 1 - set user properties method:
 $event->setUserProperties(
     [
@@ -229,10 +231,10 @@ For example:
 ```php
 // Here, we are not using Singleton as we will only use this connection to send these batch user events, we don't
 // want any user data from the Singleton instance to accidentally bleed into the first user's event
-$amplitude = new \Zumba\Amplitude\Amlitude();
+$amplitude = new \Bluenano\Amplitude\Amlitude();
 // Alternatively, if we wanted to re-use the same Amplitude object with the same key elsewhere in the code, could
 // have used:
-// $amplitude = \Zumba\Amplitude\Amplitude::getInstance('NAMED-INSTANCE');
+// $amplitude = \Bluenano\Amplitude\Amplitude::getInstance('NAMED-INSTANCE');
 // That will maintain the same Amplitude instance anywhere that requests that specific name.
 $amplitude->init('APIKEY');
 // $userEvents might be an array your application generates with user info and events that need to be sent
@@ -272,11 +274,11 @@ This library is very flexible, in terms of giving you options for how to set up 
 The first option is the easiest, the one used in the main example.  Just call either `queueEvent` or `logEvent` with the event type and event properties if there are any.
 ```php
 // Send just event with no event properties:
-\Zumba\Amplitude\Amplitude::getInstance()
+\Bluenano\Amplitude\Amplitude::getInstance()
     ->queueEvent('EVENT-NAME');
 
 // Send event and add a property:
-\Zumba\Amplitude\Amplitude::getInstance()
+\Bluenano\Amplitude\Amplitude::getInstance()
     ->queueEvent('EVENT-NAME', ['property1' => 'value1']);
 ```
 
@@ -286,14 +288,14 @@ You have the option to use an event object to set up the event, if this is more 
 
 ```php
 // Get the next event that will be queued or sent:
-$event = \Zumba\Amplitude\Amplitude::getInstance()->event();
+$event = \Bluenano\Amplitude\Amplitude::getInstance()->event();
 
 // Set up the event here, by setting properties...
 $event->eventType = 'EVENT-NAME';
 
 // Queue or send the event - since we got the event using the event method, it will be the one used on the next
 // queue or send, no need to pass it back in.
-\Zumba\Amplitude\Amplitude::getInstance()->queueEvent();
+\Bluenano\Amplitude\Amplitude::getInstance()->queueEvent();
 ```
 
 ### Setting event properties
@@ -337,24 +339,24 @@ Once you have set all the event properties, you can then send or queue the event
 
 Note: If you just created a new `Event` object, before calling `queueEvent()` or `logEvent()`, you must pass that event into amplitude like this:
 ```php
-$event = new \Zumba\Amplitude\Event();
+$event = new \Bluenano\Amplitude\Event();
 
 // Set event properties here
 
 // Pass the event into amplitude and queue it
-\Zumba\Amplitude\Amplitude::getInstance()
+\Bluenano\Amplitude\Amplitude::getInstance()
     ->event($event)
     ->queueEvent();
 ```
 
 If however, you used the event method to get the event, no need to pass it back into Amplitude.
 ```php
-$event = \Zumba\Amplitude\Amplitude::getInstance()->event();
+$event = \Bluenano\Amplitude\Amplitude::getInstance()->event();
 
 // Set event properties here
 
 // Send that event
-\Zumba\Amplitude\Amplitude::getInstance()->queueEvent();
+\Bluenano\Amplitude\Amplitude::getInstance()->queueEvent();
 ```
 In other words, when dealing with the `Event` object directly, it must have passed through Amplitude's `event()` method one way or the other before attempting to call `queueEvent()` or `logEvent()`.
 
@@ -362,16 +364,16 @@ In other words, when dealing with the `Event` object directly, it must have pass
 If you need to set up an event across different parts of the code, you ***could*** pass that event around, but you don't ***have to***, as `Amplitude` keeps track of the next event object to be sent or queued.  So you could do something like this:
 
 ```php
-$event = \Zumba\Amplitude\Amplitude::getInstance()->event();
+$event = \Bluenano\Amplitude\Amplitude::getInstance()->event();
 $event->eventType = 'Complicated Event';
 
 // -- Meanwhile, in another part of the code... --
 // As long as the event has not yet been sent or queued up, you can get it and change it as needed:
-$event = \Zumba\Amplitude\Amplitude::getInstance()->event();
+$event = \Bluenano\Amplitude\Amplitude::getInstance()->event();
 $event->deviceId = 'DEVICE ID';
 
 // Just remember, once finished setting up the event, call queueEvent() or logEvent() once.
-\Zumba\Amplitude\Amplitude::getInstance()->queueEvent();
+\Bluenano\Amplitude\Amplitude::getInstance()->queueEvent();
 ```
 
 ### Don't forget the eventType
@@ -383,7 +385,7 @@ When using the event object, remember that the `eventType` must be set one way o
 $event->eventType = 'EVENT';
 
 // OR set it when logging/queuing the event:
-\Zumba\Amplitude\Amplitude::getInstance()
+\Bluenano\Amplitude\Amplitude::getInstance()
     ->queueEvent('EVENT');
 ```
 
@@ -393,7 +395,7 @@ Note that setting it when calling `queueEvent()` or `logEvent()` will overwrite 
 
 Say you wanted to make some sort of factory that is cranking out events to send, maybe even each with it's own user ID already set...  You could do something like this:
 ```php
-$amplitude = \Zumba\Amplitude\Amplitude::getInstance()
+$amplitude = \Bluenano\Amplitude\Amplitude::getInstance()
     ->init('APIKEY');
 foreach ($eventFactory->getEvents() as $event) {
     $amplitude->event($event)
@@ -406,7 +408,7 @@ For times that you just want to quickly set some properties on the next event th
 
 ```php
 // Convenience way to quickly add properties to an event, just pass in array of properties to the event method:
-\Zumba\Zumba\Amplitude::getInstance()->event(
+\Bluenano\Amplitude\Amplitude::getInstance()->event(
     [
         'eventProp' => 'Event Value',
         'productId' => 'acme-widget-45',
@@ -415,7 +417,7 @@ For times that you just want to quickly set some properties on the next event th
 );
 
 // The above is equivalent to:
-$event = \Zumba\Zumba\Amplitude::getInstance()->event();
+$event = \Bluenano\Amplitude\Amplitude::getInstance()->event();
 $event->set(
     [
         'eventProp' => 'Event Value',
